@@ -1,0 +1,29 @@
+
+
+server {
+    listen 443 ssl;
+
+    root /var/www/wordpress;
+    set $php_sock unix:/var/run/php/php7.3-fpm.sock;
+     
+    autoindex on;
+    index index.php index.html index.htm;
+    
+    ssl on;
+    ssl_certificate /etc/ssl/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/nginx-selfsigned.key;
+    
+
+
+    server_name localhost;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass $php_sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
